@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity">
+
+
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/track_card"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/log_card" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp">
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:id="@+id/track_layout">
+                <ImageView
+                        android:contentDescription="@string/image_of_exercise"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/running2"
+                        android:id="@+id/track_image" android:scaleType="fitCenter" android:adjustViewBounds="true"
+                />
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:textSize="28sp"
+                        android:text="TRACK A RUN"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_margin="6dp"
+                />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/log_card"
+                app:layout_constraintTop_toBottomOf="@+id/track_card"
+                app:layout_constraintBottom_toTopOf="@+id/stat_card" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp">
+
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:id="@+id/log_layout">
+                <ImageView
+                        android:contentDescription="@string/image_of_exercise"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/running1"
+                        android:id="@+id/running_image" android:scaleType="fitCenter" android:adjustViewBounds="true"
+                />
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:textSize="28sp"
+                        android:text="YOUR RUNS"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_margin="6dp"
+                />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/stat_card"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toBottomOf="@+id/log_card"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp" android:layout_marginRight="16dp">
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:id="@+id/stat_layout">
+                <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content" app:srcCompat="@drawable/running3"
+                        android:id="@+id/stat_image" android:scaleType="fitCenter" android:adjustViewBounds="true"
+                        android:contentDescription="@string/image_of_exercise"/>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:textSize="28sp"
+                        android:text="STATISTICS"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:layout_margin="6dp"
+                />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
