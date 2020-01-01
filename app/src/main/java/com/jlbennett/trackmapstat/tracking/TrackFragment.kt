@@ -7,6 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 
@@ -14,6 +19,8 @@ import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 class TrackFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackBinding
+    private lateinit var mapFragment: SupportMapFragment
+    private lateinit var googleMap: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,6 +29,14 @@ class TrackFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_track, container, false)
 
         val viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
+        mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(OnMapReadyCallback {
+            googleMap = it
+            googleMap.isMyLocationEnabled = true
+            //TODO get location from ViewModel (LiveData?, or return from method?). Zoom to that location.
+//            val localLatLng = LatLng(location.latitude, location.longitude)
+//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 5F))
+        })
 
         return binding.root
     }
