@@ -1,6 +1,9 @@
 package com.jlbennett.trackmapstat
 
+import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +20,16 @@ class TrackFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_track, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_track, container, false)
+
+        val locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationListener = TrackingLocationListener()
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5L, 5F, locationListener)
+        } catch (exception: SecurityException) {
+            Log.d("TrackLogs", "$exception")
+        }
+
+        return binding.root
     }
 }
