@@ -1,4 +1,4 @@
-package com.jlbennett.trackmapstat
+package com.jlbennett.trackmapstat.tracking
 
 import android.location.Location
 import android.location.LocationListener

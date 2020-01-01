@@ -1,14 +1,13 @@
-package com.jlbennett.trackmapstat
+package com.jlbennett.trackmapstat.tracking
 
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 
 
@@ -22,13 +21,7 @@ class TrackFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_track, container, false)
 
-        val locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val locationListener = TrackingLocationListener()
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5L, 5F, locationListener)
-        } catch (exception: SecurityException) {
-            Log.d("TrackLogs", "$exception")
-        }
+        val viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
 
         return binding.root
     }

@@ -7,6 +7,6 @@
               android:label="HomeFragment">
         <action android:id="@+id/action_homeFragment_to_trackFragment" app:destination="@id/trackFragment"/>
     </fragment>
-    <fragment android:id="@+id/trackFragment" android:name="com.jlbennett.trackmapstat.TrackFragment"
+    <fragment android:id="@+id/trackFragment" android:name="com.jlbennett.trackmapstat.tracking.TrackFragment"
               android:label="TrackFragment"/>
 </navigation>
