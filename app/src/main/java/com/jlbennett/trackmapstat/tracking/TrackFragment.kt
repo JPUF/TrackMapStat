@@ -51,7 +51,7 @@ class TrackFragment : Fragment() {
         viewModel.currentLocation.observe(this, Observer { newLocation ->
             Log.d("TrackLogs", "Location in Fragment: ${newLocation.latitude} : ${newLocation.longitude}")
             val localLatLng = LatLng(newLocation.latitude, newLocation.longitude)
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 16F))
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 17F))
             googleMap.addPolyline(
                 routeLine.add(LatLng(newLocation.latitude, newLocation.longitude)).color(Color.RED).width(20F)
             )
