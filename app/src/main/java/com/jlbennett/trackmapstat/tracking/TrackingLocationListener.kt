@@ -5,10 +5,11 @@ import android.location.LocationListener
 import android.os.Bundle
 import android.util.Log
 
-class TrackingLocationListener : LocationListener {
+class TrackingLocationListener(private val viewModel: TrackViewModel) : LocationListener {
 
     override fun onLocationChanged(location: Location?) {
         Log.d("TrackLogs", "Location = ${location!!.latitude}:${location.longitude}")
+        viewModel.updateLocation(location)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {

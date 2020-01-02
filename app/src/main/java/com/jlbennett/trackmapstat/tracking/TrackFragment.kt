@@ -1,11 +1,13 @@
 package com.jlbennett.trackmapstat.tracking
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -33,9 +35,13 @@ class TrackFragment : Fragment() {
         mapFragment.getMapAsync(OnMapReadyCallback {
             googleMap = it
             googleMap.isMyLocationEnabled = true
-            //TODO get location from ViewModel (LiveData?, or return from method?). Zoom to that location.
-//            val localLatLng = LatLng(location.latitude, location.longitude)
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 5F))
+            //TODO handle permission granting
+        })
+        viewModel.currentLocation.observe(this, Observer {location ->
+            Log.d("TrackLogs", "Location in Fragment: ${location.latitude} : ${location.longitude}")
+            val localLatLng = LatLng(location.latitude, location.longitude)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 16F))
+
         })
 
         return binding.root
