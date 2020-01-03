@@ -58,6 +58,10 @@ class TrackFragment : Fragment() {
 
         })
 
+        viewModel.currentDistance.observe(this, Observer {distance ->
+            binding.distanceText.text = "${"%.2f".format(distance)}"
+        })
+
         return binding.root
     }
 }
