@@ -55,11 +55,16 @@ class TrackFragment : Fragment() {
             googleMap.addPolyline(
                 routeLine.add(LatLng(newLocation.latitude, newLocation.longitude)).color(Color.RED).width(20F)
             )
-
         })
 
         viewModel.currentDistance.observe(this, Observer {distance ->
-            binding.distanceText.text = "${"%.2f".format(distance)}"
+            binding.distanceText.text = "${"%.2f".format(distance)}m"
+        })
+
+        viewModel.currentTime.observe(this, Observer {time ->
+            val minutes = time / (60*1000000000)//borked
+            val seconds = (time / 1000000000) % 60
+            binding.timeText.text = "${"%d:%02d".format(minutes, seconds)}"//TODO untested formatting.
         })
 
         return binding.root

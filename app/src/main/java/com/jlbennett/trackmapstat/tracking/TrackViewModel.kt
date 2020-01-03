@@ -16,6 +16,8 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
     private var locationListener: TrackingLocationListener
     private val _currentLocation = MutableLiveData<Location>()
     private var distanceTally: Float = 0F
+    private var timeStarted: Long = 0L
+
     val currentLocation: LiveData<Location>
         get() = _currentLocation
 
@@ -23,26 +25,31 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
     val currentDistance: LiveData<Float>
         get() = _currentDistance
 
+    private val _currentTime = MutableLiveData<Long>(0L)
+    val currentTime: LiveData<Long>
+        get() = _currentTime
+
     init {
         Log.d("TrackLogs", "TrackViewModel init: Created!")
         locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationListener = TrackingLocationListener(this)
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5L, 5F, locationListener)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5L, 1F, locationListener)
         } catch (exception: SecurityException) {
             Log.d("TrackLogs", "$exception")
         }
     }
 
     fun updateLocation(location: Location) {
-        /*_currentDistance.value.let {distance ->
-            _currentDistance.value = distance!! + location.distanceTo(_currentLocation.value)
-        }*/
-        if(_currentLocation.value == null) {
+        if (_currentLocation.value == null) {
             _currentLocation.value = location
+            timeStarted = location.elapsedRealtimeNanos//maybe check if 0 seperaateelly
         }
         distanceTally += location.distanceTo(_currentLocation.value)
+
         _currentDistance.value = distanceTally
+        _currentTime.value = location.elapsedRealtimeNanos - timeStarted
+
         _currentLocation.value = location
     }
 
