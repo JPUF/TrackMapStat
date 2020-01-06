@@ -2,6 +2,7 @@ package com.jlbennett.trackmapstat.tracking
 
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Paint
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -18,9 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 
@@ -40,20 +39,20 @@ class TrackFragment : Fragment() {
 
         val viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(OnMapReadyCallback {
-            googleMap = it
+        mapFragment.getMapAsync { map ->
+            googleMap = map
             try{
                 googleMap.isMyLocationEnabled = true
             } catch (exception: SecurityException) {
                 //TODO handle permission granting
             }
-        })
+        }
         viewModel.currentLocation.observe(this, Observer { newLocation ->
             Log.d("TrackLogs", "Location in Fragment: ${newLocation.latitude} : ${newLocation.longitude}")
             val localLatLng = LatLng(newLocation.latitude, newLocation.longitude)
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 17F))
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 17F))//move above
             googleMap.addPolyline(
-                routeLine.add(LatLng(newLocation.latitude, newLocation.longitude)).color(Color.RED).width(20F)
+                routeLine.add(LatLng(newLocation.latitude, newLocation.longitude)).color(Color.RED).width(12F).endCap(RoundCap())
             )
         })
 
@@ -62,10 +61,26 @@ class TrackFragment : Fragment() {
         })
 
         viewModel.currentTime.observe(this, Observer {time ->
-            val minutes = time / (60*1000000000)//borked
-            val seconds = (time / 1000000000) % 60
-            binding.timeText.text = "${"%d:%02d".format(minutes, seconds)}"//TODO untested formatting.
+            val seconds = (time / 1000000000)
+            val minutes = seconds / 60
+            val hours = minutes / 60
+            binding.timeText.text = "%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)
         })
+
+        binding.startStopButton.setOnClickListener {button ->
+            when(button.tag) {
+                "start" -> {
+                    viewModel.startTracking()
+                    button.tag = "stop"
+                    button.setBackgroundColor(Color.RED)
+                }
+                else -> {
+                    viewModel.stopTracking()
+                    button.tag = "start"
+                    button.setBackgroundColor(Color.GREEN)
+                }
+            }
+        }
 
         return binding.root
     }
