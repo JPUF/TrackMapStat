@@ -23,6 +23,8 @@
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyCnkCUcANMbCaPCMBkYZuDtMTUwwDp0BDI"/>
-    </application>
 
+        <service android:name=".tracking.TrackService"
+                 android:enabled="true"/>
+    </application>
 </manifest>

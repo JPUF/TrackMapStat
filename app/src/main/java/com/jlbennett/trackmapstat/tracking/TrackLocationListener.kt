@@ -5,22 +5,23 @@ import android.location.LocationListener
 import android.os.Bundle
 import android.util.Log
 
-class TrackingLocationListener(private val viewModel: TrackViewModel) : LocationListener {
+class TrackLocationListener : LocationListener {
 
     override fun onLocationChanged(location: Location?) {
-        Log.d("TrackLogs", "Location = ${location!!.latitude}:${location.longitude}")
-        viewModel.updateLocation(location)
+        Log.d("TrackService", "new Location = ${location!!.latitude}:${location.longitude}")
+        //iewModel.updateLocation(location)
+        //TODO update via Callback?
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        Log.d("TrackLogs", "onStatusChanged: $provider : $status")
+        Log.d("TrackService", "onStatusChanged: $provider : $status")
     }
 
     override fun onProviderEnabled(provider: String?) {
-        Log.d("TrackLogs","onProviderEnabled: $provider")
+        Log.d("TrackService","onProviderEnabled: $provider")
     }
 
     override fun onProviderDisabled(provider: String?) {
-        Log.d("TrackLogs", "onProviderDisabled: $provider")
+        Log.d("TrackService", "onProviderDisabled: $provider")
     }
 }

@@ -8,12 +8,9 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlin.random.Random
 
 class TrackViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var locationManager: LocationManager
-    private var locationListener: TrackingLocationListener
     private val _currentLocation = MutableLiveData<Location>()
     private var tracking: Boolean = false
     private var distanceTally: Float = 0F
@@ -32,17 +29,10 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         Log.d("TrackLogs", "TrackViewModel init: Created!")
-        locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationListener = TrackingLocationListener(this)
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5L, 1F, locationListener)
-        } catch (exception: SecurityException) {
-            Log.d("TrackLogs", "$exception")
-        }
     }
 
     fun updateLocation(location: Location) {
-        if(tracking){
+        if (tracking) {
             if (_currentLocation.value == null) {
                 _currentLocation.value = location
                 timeStarted = location.elapsedRealtimeNanos
@@ -57,17 +47,16 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun startTracking() {
+    fun startTracking() {//maybe request location updates from here.
         tracking = true
     }
 
-    fun stopTracking() {
+    fun stopTracking() {//maybe remove updates from here.
         tracking = false
     }
 
     override fun onCleared() {
         super.onCleared()
-        locationManager.removeUpdates(locationListener)
         Log.d("TrackLogs", "TrackViewModel: onCleared()")
     }
 }
