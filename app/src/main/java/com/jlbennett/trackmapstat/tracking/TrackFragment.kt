@@ -23,8 +23,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.maps.model.RoundCap
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 
@@ -48,13 +46,12 @@ class TrackFragment : Fragment() {
         override fun onServiceDisconnected(className: ComponentName?) {
             isServiceBound = false
             service = null
-            //unregister callbacks///
+            //unregister callbacks??? 
         }
     }
 
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
-    private var routeLine = PolylineOptions()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,14 +84,12 @@ class TrackFragment : Fragment() {
                 //TODO handle permission granting
             }
         }
-        viewModel.currentLocation.observe(this, Observer { newLocation ->
-            val localLatLng = LatLng(newLocation.latitude, newLocation.longitude)
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 17F))//move above
-            googleMap.addPolyline(
-                routeLine.add(LatLng(newLocation.latitude, newLocation.longitude)).color(Color.RED).width(12F).endCap(
-                    RoundCap()
-                )
-            )
+
+        viewModel.currentLine.observe(this, Observer {line ->
+            val latestLocation = line.points[line.points.size - 1]
+            val latestLatLng = LatLng(latestLocation.latitude, latestLocation.longitude)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))//move above
+            googleMap.addPolyline(line)
         })
 
         viewModel.currentDistance.observe(this, Observer { distance ->
