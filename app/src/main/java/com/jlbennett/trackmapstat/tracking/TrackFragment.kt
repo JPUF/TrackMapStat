@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -31,21 +32,23 @@ import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 class TrackFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackBinding
+    private lateinit var viewModel: TrackViewModel
     var service: TrackService? = null
     var isServiceBound = false
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName?, iBinder: IBinder?) {
-            service = (iBinder as TrackService.TrackBinder).getService()
+            val binder = iBinder as TrackService.TrackBinder
+            service = binder.getService()
             isServiceBound = true
-            //TODO register callback here
+            binder.registerCallback(callback)
             Log.d("TrackService", "onServiceConnected - service is null: ${service == null}")
         }
 
         override fun onServiceDisconnected(className: ComponentName?) {
             isServiceBound = false
             service = null
-            //unregister callbacks here
+            //unregister callbacks///
         }
     }
 
@@ -59,7 +62,7 @@ class TrackFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_track, container, false)
 
-        val viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
 
         val serviceClass = TrackService::class.java
         val serviceIntent = Intent(activity, serviceClass)
@@ -85,7 +88,6 @@ class TrackFragment : Fragment() {
             }
         }
         viewModel.currentLocation.observe(this, Observer { newLocation ->
-            Log.d("TrackLogs", "Location in Fragment: ${newLocation.latitude} : ${newLocation.longitude}")
             val localLatLng = LatLng(newLocation.latitude, newLocation.longitude)
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(localLatLng, 17F))//move above
             googleMap.addPolyline(
@@ -127,6 +129,13 @@ class TrackFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    val callback = object : TrackService.ITrackCallback {
+        override fun onLocationUpdate(location: Location) {
+            viewModel.updateLocation(location)
+        }
+
     }
 
     private fun isTrackServiceRunning(): Boolean {

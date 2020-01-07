@@ -12,7 +12,6 @@ import androidx.lifecycle.MutableLiveData
 class TrackViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _currentLocation = MutableLiveData<Location>()
-    private var tracking: Boolean = false
     private var distanceTally: Float = 0F
     private var timeStarted: Long = 0L
 
@@ -32,27 +31,17 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateLocation(location: Location) {
-        if (tracking) {
-            if (_currentLocation.value == null) {
-                _currentLocation.value = location
-                timeStarted = location.elapsedRealtimeNanos
-                timeStarted = System.currentTimeMillis() * 1000000
-            }
-            distanceTally += location.distanceTo(_currentLocation.value)
-
-            _currentDistance.value = distanceTally
-            _currentTime.value = (System.currentTimeMillis() * 1000000) - timeStarted
-
+        if (_currentLocation.value == null) {
             _currentLocation.value = location
+            timeStarted = location.elapsedRealtimeNanos
+            timeStarted = System.currentTimeMillis() * 1000000
         }
-    }
+        distanceTally += location.distanceTo(_currentLocation.value)
 
-    fun startTracking() {//maybe request location updates from here.
-        tracking = true
-    }
+        _currentDistance.value = distanceTally
+        _currentTime.value = (System.currentTimeMillis() * 1000000) - timeStarted
 
-    fun stopTracking() {//maybe remove updates from here.
-        tracking = false
+        _currentLocation.value = location
     }
 
     override fun onCleared() {

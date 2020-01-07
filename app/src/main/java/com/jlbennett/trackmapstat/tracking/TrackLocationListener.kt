@@ -5,12 +5,11 @@ import android.location.LocationListener
 import android.os.Bundle
 import android.util.Log
 
-class TrackLocationListener : LocationListener {
+class TrackLocationListener(private val trackService: TrackService) : LocationListener {
 
     override fun onLocationChanged(location: Location?) {
-        Log.d("TrackService", "new Location = ${location!!.latitude}:${location.longitude}")
-        //iewModel.updateLocation(location)
-        //TODO update via Callback?
+        Log.d("TrackService", "Location = ${location!!.latitude}:${location.longitude}")
+        trackService.executeCallbacks(location)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
