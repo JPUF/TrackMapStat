@@ -1,23 +1,20 @@
 package com.jlbennett.trackmapstat.tracking
 
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Paint
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.widget.Button
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.jlbennett.trackmapstat.R
@@ -67,17 +64,22 @@ class TrackFragment : Fragment() {
             binding.timeText.text = "%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)
         })
 
-        binding.startStopButton.setOnClickListener {button ->
+        binding.startStopButton.setOnClickListener {buttonView ->
+            val button = buttonView as Button
             when(button.tag) {
                 "start" -> {
                     viewModel.startTracking()
                     button.tag = "stop"
+                    button.text = resources.getString(R.string.stop)
                     button.setBackgroundColor(Color.RED)
                 }
                 else -> {
                     viewModel.stopTracking()
                     button.tag = "start"
+                    button.text = resources.getString(R.string.start)
                     button.setBackgroundColor(Color.GREEN)
+                    Toast.makeText( context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
+                    fragmentManager!!.popBackStack()
                 }
             }
         }

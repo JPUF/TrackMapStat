@@ -67,6 +67,7 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
+        locationManager.removeUpdates(locationListener)
         Log.d("TrackLogs", "TrackViewModel: onCleared()")
     }
 }
