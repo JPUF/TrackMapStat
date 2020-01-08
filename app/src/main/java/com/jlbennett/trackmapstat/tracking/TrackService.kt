@@ -92,13 +92,11 @@ class TrackService : Service(), LifecycleObserver {
     fun stopTracking() {
         Log.d("TrackService", "stopTracking - removing updates")
         locationManager.removeUpdates(locationListener)
-        //TODO save run to database from here.
+        //TODO save run to database from here. Consider the new Fragment TODO
         stopSelf()
     }
 
     private fun executeCallbacks(run: Run) {
-        //TODO update and increment all elements of the run (polyline, etc) as a member of this service.
-        //So the run exists outside of the fragment's lifecycle.
         val callbackCount = remoteCallbackList.beginBroadcast()
         for (i in 0 until callbackCount) {
             remoteCallbackList.getBroadcastItem(i).callback!!.onLocationUpdate(run)

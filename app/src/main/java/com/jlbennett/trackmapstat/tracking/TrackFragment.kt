@@ -94,12 +94,12 @@ class TrackFragment : Fragment() {
         formatButton()
 
         binding.startStopButton.setOnClickListener {
-            //TODO button should be formatted based off LiveData: runStarted
             formatButton()
             when (viewModel.runStarted) {
                 true -> {
                     service!!.stopTracking()
                     Toast.makeText(context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
+                    //TODO perhaps this should instead go to a new fragment, which allows user to name the run etc.
                     fragmentManager!!.popBackStack()
                 }
                 false -> {
@@ -140,17 +140,6 @@ class TrackFragment : Fragment() {
         //TODO should add all points that are yet to have been drawn. Avoid skipping
     }
 
-    private fun isTrackServiceRunning(): Boolean {
-        val activityManager: ActivityManager =
-            activity!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service: ActivityManager.RunningServiceInfo in activityManager.getRunningServices(Integer.MAX_VALUE)) {
-            if (service.service.className == TrackService::class.java.name) {
-                return true
-            }
-        }
-        return false
-    }
-
     private fun initMap(line: PolylineOptions? = null) {
         mapView.getMapAsync { map ->
             googleMap = map
@@ -169,13 +158,6 @@ class TrackFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (isTrackServiceRunning()) {//TODO can remove this check and method.
-            //service already running
-            Log.d("TrackService", "starting and binding - service already running")
-        } else {
-            //Start service afresh
-            Log.d("TrackService", "starting and binding - service wasn't started")
-        }
         activity!!.startService(serviceIntent)
         activity!!.bindService(serviceIntent, connection, 0)
     }

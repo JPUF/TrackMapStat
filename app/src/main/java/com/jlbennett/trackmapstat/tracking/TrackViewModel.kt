@@ -27,11 +27,6 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
 
     var runStarted: Boolean = false
 
-    //TODO extract this data into a Run model class.
-    //get() = Run.distance
-    //maybe
-    //TODO all Run info needs to persist beyond fragment lifecycle.
-
     init {
         Log.d("TrackLogs", "TrackViewModel init: Created!")
     }
