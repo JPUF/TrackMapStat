@@ -25,9 +25,7 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
     val currentLine: LiveData<PolylineOptions>
         get() = _currentLine
 
-    private val _runStarted = MutableLiveData<Boolean>()
-    val runStarted: LiveData<Boolean>
-        get() = _runStarted
+    var runStarted: Boolean = false
 
     //TODO extract this data into a Run model class.
     //get() = Run.distance
@@ -42,7 +40,8 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
         _currentDistance.value = run.distance
         _currentTime.value = run.timeElapsed
         _currentLine.value = run.routeLine
-        _runStarted.value = run.runStarted
+        runStarted = run.runStarted
+        Log.d("TrackButton", "ViewModel: $runStarted")
     }
 
     override fun onCleared() {

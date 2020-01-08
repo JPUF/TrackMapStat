@@ -115,7 +115,8 @@ class TrackService : Service(), LifecycleObserver {
         run.distance += location.distanceTo(run.latestLocation)
         run.timeElapsed = (System.currentTimeMillis() * 1000000) - run.timeStarted!!
         run.routeLine.add(LatLng(location.latitude, location.longitude)).color(Color.CYAN).width(12F)
-        Log.d("TrackService", "RUN: dst: ${run.distance} time: ${run.timeElapsed} points: ${run.routeLine.points.size}")
+        Log.d("TrackService", "RUN: dst: ${run.distance} time: ${run.timeElapsed} points: ${run.routeLine.points.size} started: ${run.runStarted}")
+        Log.d("TrackButton", "Servuce: ${run.runStarted}")
         run.latestLocation = location
         executeCallbacks(run)
     }

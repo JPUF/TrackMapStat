@@ -91,23 +91,19 @@ class TrackFragment : Fragment() {
             binding.timeText.text = "%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)
         })
 
-        binding.startStopButton.setOnClickListener { buttonView ->
+        formatButton()
+
+        binding.startStopButton.setOnClickListener {
             //TODO button should be formatted based off LiveData: runStarted
-            val button = buttonView as Button
-            when (button.tag) {
-                "start" -> {
-                    button.tag = "stop"
-                    button.text = resources.getString(R.string.stop)
-                    button.setBackgroundColor(Color.RED)
-                    service!!.startTracking()
-                }
-                else -> {
+            formatButton()
+            when (viewModel.runStarted) {
+                true -> {
                     service!!.stopTracking()
-                    button.tag = "start"
-                    button.text = resources.getString(R.string.start)
-                    button.setBackgroundColor(Color.GREEN)
                     Toast.makeText(context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
                     fragmentManager!!.popBackStack()
+                }
+                false -> {
+                    service!!.startTracking()
                 }
             }
         }
@@ -115,11 +111,25 @@ class TrackFragment : Fragment() {
         return binding.root
     }
 
+    private fun formatButton() {
+        val button = binding.startStopButton
+        Log.d("TrackButton", "Formatting Button - has run started? ${viewModel.runStarted}")
+        when(viewModel.runStarted) {
+            true -> {
+                button.text = "STOP"
+                button.setBackgroundColor(Color.RED)
+            }
+            false -> {
+                button.text = "START"
+            }
+        }
+    }
+
     val callback = object : TrackService.ITrackCallback {
         override fun onLocationUpdate(run: Run) {
             viewModel.updateRun(run)
+            formatButton()
         }
-
     }
 
     private fun updateLine(line: PolylineOptions) {
