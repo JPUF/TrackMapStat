@@ -46,7 +46,7 @@ class TrackFragment : Fragment() {
         override fun onServiceDisconnected(className: ComponentName?) {
             isServiceBound = false
             service = null
-            //unregister callbacks??? 
+            //unregister callbacks???
         }
     }
 
@@ -76,8 +76,11 @@ class TrackFragment : Fragment() {
         }
 
         mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.retainInstance = true
         mapFragment.getMapAsync { map ->
             googleMap = map
+            val initialPosition = LatLng(52.95, -1.15)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 10F))
             try {
                 googleMap.isMyLocationEnabled = true
             } catch (exception: SecurityException) {
@@ -85,7 +88,7 @@ class TrackFragment : Fragment() {
             }
         }
 
-        viewModel.currentLine.observe(this, Observer {line ->
+        viewModel.currentLine.observe(this, Observer { line ->
             val latestLocation = line.points[line.points.size - 1]
             val latestLatLng = LatLng(latestLocation.latitude, latestLocation.longitude)
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))//move above
