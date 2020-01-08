@@ -25,6 +25,7 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.jlbennett.trackmapstat.R
+import com.jlbennett.trackmapstat.Run
 import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 
 
@@ -47,7 +48,6 @@ class TrackFragment : Fragment() {
         override fun onServiceDisconnected(className: ComponentName?) {
             isServiceBound = false
             service = null
-            //unregister callbacks???
         }
     }
 
@@ -92,6 +92,7 @@ class TrackFragment : Fragment() {
         })
 
         binding.startStopButton.setOnClickListener { buttonView ->
+            //TODO button should be formatted based off LiveData: runStarted
             val button = buttonView as Button
             when (button.tag) {
                 "start" -> {
@@ -115,8 +116,8 @@ class TrackFragment : Fragment() {
     }
 
     val callback = object : TrackService.ITrackCallback {
-        override fun onLocationUpdate(location: Location) {
-            viewModel.updateLocation(location)
+        override fun onLocationUpdate(run: Run) {
+            viewModel.updateRun(run)
         }
 
     }
@@ -126,6 +127,7 @@ class TrackFragment : Fragment() {
         val latestLatLng = LatLng(latestLocation.latitude, latestLocation.longitude)
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))
         googleMap.addPolyline(line)
+        //TODO should add all points that are yet to have been drawn. Avoid skipping
     }
 
     private fun isTrackServiceRunning(): Boolean {

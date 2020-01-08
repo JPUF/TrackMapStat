@@ -12,7 +12,7 @@ class TrackLocationListener(private val trackService: TrackService) : LocationLi
 
     override fun onLocationChanged(location: Location?) {
         Log.d("TrackService", "Location = ${location!!.latitude}:${location.longitude}")
-        trackService.executeCallbacks(location)
+        trackService.updateRun(location)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
