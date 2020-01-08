@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.RoundCap
@@ -19,6 +20,10 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
     private var distanceTally: Float = 0F
     private var timeStarted: Long = 0L
     private var routeLine = PolylineOptions()
+    private val _googleMap = MutableLiveData<GoogleMap>()
+    val googleMap: LiveData<GoogleMap>
+        get() = _googleMap
+
 
     private val _currentDistance = MutableLiveData<Float>(0F)
     val currentDistance: LiveData<Float>
@@ -39,6 +44,7 @@ class TrackViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         Log.d("TrackLogs", "TrackViewModel init: Created!")
+        _googleMap.value
     }
 
     fun updateLocation(location: Location) {

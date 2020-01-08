@@ -15,12 +15,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.jlbennett.trackmapstat.R
@@ -50,7 +52,7 @@ class TrackFragment : Fragment() {
         }
     }
 
-    private lateinit var mapFragment: SupportMapFragment
+    private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
 
     override fun onCreateView(
@@ -75,9 +77,9 @@ class TrackFragment : Fragment() {
             activity!!.application.bindService(serviceIntent, connection, 0)
         }
 
-        mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.retainInstance = true
-        mapFragment.getMapAsync { map ->
+        mapView = binding.map
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync { map ->
             googleMap = map
             val initialPosition = LatLng(52.95, -1.15)
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 10F))
@@ -86,12 +88,14 @@ class TrackFragment : Fragment() {
             } catch (exception: SecurityException) {
                 //TODO handle permission granting
             }
+            mapView.onResume()
         }
-
+        
         viewModel.currentLine.observe(this, Observer { line ->
             val latestLocation = line.points[line.points.size - 1]
             val latestLatLng = LatLng(latestLocation.latitude, latestLocation.longitude)
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))//move above
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))
+            //not init
             googleMap.addPolyline(line)
         })
 
