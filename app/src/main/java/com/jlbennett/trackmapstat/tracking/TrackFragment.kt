@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,8 +22,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.databinding.FragmentTrackBinding
 
@@ -55,6 +54,9 @@ class TrackFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
 
+    private val serviceClass = TrackService::class.java
+    private lateinit var serviceIntent: Intent
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,41 +64,20 @@ class TrackFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_track, container, false)
 
         viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
-
-        val serviceClass = TrackService::class.java
-        val serviceIntent = Intent(activity, serviceClass)
-
-        if (isTrackServiceRunning()) {
-            //service already running
-            Log.d("TrackService", "binding - service already running")
-            activity!!.bindService(serviceIntent, connection, 0)
-        } else {
-            //Start service afresh
-            Log.d("TrackService", "starting - service wasn't started")
-            activity!!.application.startService(serviceIntent)
-            activity!!.application.bindService(serviceIntent, connection, 0)
-        }
+        serviceIntent = Intent(activity, serviceClass)
 
         mapView = binding.map
         mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync { map ->
-            googleMap = map
-            val initialPosition = LatLng(52.95, -1.15)
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 10F))
-            try {
-                googleMap.isMyLocationEnabled = true
-            } catch (exception: SecurityException) {
-                //TODO handle permission granting
-            }
-            mapView.onResume()
-        }
-        
+        if (!::googleMap.isInitialized) initMap()
+        mapView.onResume()
+
         viewModel.currentLine.observe(this, Observer { line ->
-            val latestLocation = line.points[line.points.size - 1]
-            val latestLatLng = LatLng(latestLocation.latitude, latestLocation.longitude)
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))
-            //not init
-            googleMap.addPolyline(line)
+            if (!::googleMap.isInitialized) {
+                Log.d("TrackService", "Map not initialised: calling initMap")
+                initMap(line)
+            } else {
+                updateLine(line)
+            }
         })
 
         viewModel.currentDistance.observe(this, Observer { distance ->
@@ -140,6 +121,13 @@ class TrackFragment : Fragment() {
 
     }
 
+    private fun updateLine(line: PolylineOptions) {
+        val latestLocation = line.points[line.points.size - 1]
+        val latestLatLng = LatLng(latestLocation.latitude, latestLocation.longitude)
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latestLatLng, 17F))
+        googleMap.addPolyline(line)
+    }
+
     private fun isTrackServiceRunning(): Boolean {
         val activityManager: ActivityManager =
             activity!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -149,5 +137,41 @@ class TrackFragment : Fragment() {
             }
         }
         return false
+    }
+
+    private fun initMap(line: PolylineOptions? = null) {
+        mapView.getMapAsync { map ->
+            googleMap = map
+            val initialPosition = LatLng(52.95, -1.15)
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 10F))
+            try {
+                googleMap.isMyLocationEnabled = true
+            } catch (exception: SecurityException) {
+                //TODO handle permission granting
+            }
+            if (line != null) {
+                updateLine(line)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isTrackServiceRunning()) {//TODO can remove this check and method.
+            //service already running
+            Log.d("TrackService", "starting and binding - service already running")
+        } else {
+            //Start service afresh
+            Log.d("TrackService", "starting and binding - service wasn't started")
+        }
+        activity!!.startService(serviceIntent)
+        activity!!.bindService(serviceIntent, connection, 0)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isServiceBound) {
+            activity!!.unbindService(connection)
+        }
     }
 }
