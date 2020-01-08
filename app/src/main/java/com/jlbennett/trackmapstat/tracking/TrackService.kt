@@ -13,7 +13,10 @@ import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleObserver
+import androidx.navigation.NavDeepLinkBuilder
+import androidx.navigation.Navigation.findNavController
 import com.google.android.gms.maps.model.LatLng
+import com.jlbennett.trackmapstat.MainActivity
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.Run
 
@@ -24,7 +27,7 @@ class TrackService : Service(), LifecycleObserver {
     private lateinit var locationManager: LocationManager
     private lateinit var locationListener: TrackLocationListener
     val remoteCallbackList = RemoteCallbackList<TrackBinder>()
-    val run = Run()
+    private val run = Run()
 
     override fun onCreate() {
         super.onCreate()
@@ -35,34 +38,8 @@ class TrackService : Service(), LifecycleObserver {
 
     override fun onBind(intent: Intent?): IBinder? {
         Log.d("TrackService", "service onBind")
-        //Start notification here.
         showNotification()
         return binder
-    }
-
-    private fun showNotification() {
-        val channelID = "100"
-        val notificationID = 1
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationName = "TrackStatMap Notification Channel"
-            val description = "Notification Channel for TrackStatMap app"
-            val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(channelID, notificationName, importance)
-            channel.description = description
-            notificationManager.createNotificationChannel(channel)
-        }
-        val trackIntent = Intent(this, TrackFragment::class.java)
-        val trackPendingIntent = PendingIntent.getActivity(this, 0, trackIntent, 0)
-        //TODO notification doesn't return user to Fragment.
-        val builder = NotificationCompat.Builder(this, channelID)
-            .setSmallIcon(R.drawable.ic_runner)
-            .setSound(null)
-            .setContentTitle(resources.getString(R.string.app_name))
-            .setContentText("Return to Map")
-            .setContentIntent(trackPendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-        startForeground(notificationID, builder.build())
     }
 
     override fun onDestroy() {
@@ -113,10 +90,43 @@ class TrackService : Service(), LifecycleObserver {
         run.distance += location.distanceTo(run.latestLocation)
         run.timeElapsed = (System.currentTimeMillis() * 1000000) - run.timeStarted!!
         run.routeLine.add(LatLng(location.latitude, location.longitude)).color(Color.CYAN).width(12F)
-        Log.d("TrackService", "RUN: dst: ${run.distance} time: ${run.timeElapsed} points: ${run.routeLine.points.size} started: ${run.runStarted}")
-        Log.d("TrackButton", "Servuce: ${run.runStarted}")
+        Log.d("TrackButton", "Service: ${run.runStarted}")
         run.latestLocation = location
         executeCallbacks(run)
+    }
+
+    private fun showNotification() {
+        val channelID = "100"
+        val notificationID = 1
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationName = "TrackStatMap Notification Channel"
+            val description = "Notification Channel for TrackStatMap app"
+            val importance = NotificationManager.IMPORTANCE_LOW
+            val channel = NotificationChannel(channelID, notificationName, importance)
+            channel.description = description
+            notificationManager.createNotificationChannel(channel)
+        }
+        /*
+        val trackPendingIntent: PendingIntent = findNavController(R.id.navHostFragment)
+            .setGraph(R.navigation.navigation)
+            .setDestination(R.id.trackDestination)
+            .createPendingIntent()
+        */
+
+        val trackIntent = Intent(applicationContext, TrackFragment::class.java)
+        trackIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val trackPendingIntent = PendingIntent.getActivity(applicationContext, 1001, trackIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //TODO notification doesn't return user to Fragment.
+        val builder = NotificationCompat.Builder(applicationContext, channelID)
+            .setSmallIcon(R.drawable.ic_runner)
+            .setSound(null)
+            .setContentTitle(resources.getString(R.string.app_name))
+            .setContentText("Return to Map")
+            .setContentIntent(trackPendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+        notificationManager.notify(notificationID, builder.build())
     }
 
     inner class TrackBinder : Binder(), IInterface {

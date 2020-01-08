@@ -9,4 +9,5 @@
     </fragment>
     <fragment android:id="@+id/trackFragment" android:name="com.jlbennett.trackmapstat.tracking.TrackFragment"
               android:label="TrackFragment"/>
+    <action android:id="@+id/trackDestination" app:destination="@id/trackFragment" app:launchSingleTop="true"/>
 </navigation>
