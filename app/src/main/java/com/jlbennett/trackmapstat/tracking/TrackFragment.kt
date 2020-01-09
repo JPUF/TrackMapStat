@@ -1,14 +1,9 @@
 package com.jlbennett.trackmapstat.tracking
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -16,12 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -101,9 +95,7 @@ class TrackFragment : Fragment() {
             when (viewModel.runStarted) {
                 true -> {
                     service!!.stopTracking()
-                    Toast.makeText(context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
-                    //TODO perhaps this should instead go to a new fragment, which allows user to name the run etc.
-                    fragmentManager!!.popBackStack()
+                    //fragmentManager!!.popBackStack()
                 }
                 false -> {
                     service!!.startTracking()
@@ -128,10 +120,20 @@ class TrackFragment : Fragment() {
         }
     }
 
+    private fun navigateToSaveFragment(run: Run) {
+        Toast.makeText(context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
+        //TODO perhaps this should instead go to a new fragment, which allows user to name the run etc.
+        findNavController().navigate(R.id.action_trackFragment_to_saveRunFragment)
+    }
+
     val callback = object : TrackService.ITrackCallback {
         override fun onLocationUpdate(run: Run) {
             viewModel.updateRun(run)
             formatButton()
+        }
+
+        override fun onRunFinished(run: Run) {
+
         }
     }
 

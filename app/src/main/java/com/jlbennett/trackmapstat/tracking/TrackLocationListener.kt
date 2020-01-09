@@ -1,12 +1,9 @@
 package com.jlbennett.trackmapstat.tracking
 
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
 import android.util.Log
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
 
 class TrackLocationListener(private val trackService: TrackService) : LocationListener {
 

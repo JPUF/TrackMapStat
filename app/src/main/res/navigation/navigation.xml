@@ -8,6 +8,10 @@
         <action android:id="@+id/action_homeFragment_to_trackFragment" app:destination="@id/trackFragment"/>
     </fragment>
     <fragment android:id="@+id/trackFragment" android:name="com.jlbennett.trackmapstat.tracking.TrackFragment"
-              android:label="TrackFragment"/>
+              android:label="TrackFragment">
+        <action android:id="@+id/action_trackFragment_to_saveRunFragment" app:destination="@id/saveRunFragment"/>
+    </fragment>
     <action android:id="@+id/trackDestination" app:destination="@id/trackFragment" app:launchSingleTop="true"/>
+    <fragment android:id="@+id/saveRunFragment" android:name="com.jlbennett.trackmapstat.SaveRunFragment"
+              android:label="SaveRunFragment"/>
 </navigation>

@@ -27,6 +27,7 @@
                 android:value="AIzaSyCnkCUcANMbCaPCMBkYZuDtMTUwwDp0BDI"/>
 
         <service android:name=".tracking.TrackService"
-                 android:enabled="true"/>
+                 android:enabled="true"
+        />
     </application>
 </manifest>

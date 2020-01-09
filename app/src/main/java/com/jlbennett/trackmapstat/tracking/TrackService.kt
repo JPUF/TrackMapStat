@@ -34,11 +34,11 @@ class TrackService : Service(), LifecycleObserver {
         Log.d("TrackService", "Service onCreate()")
         locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationListener = TrackLocationListener(this)
+        showNotification()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         Log.d("TrackService", "service onBind")
-        showNotification()
         return binder
     }
 
@@ -60,7 +60,7 @@ class TrackService : Service(), LifecycleObserver {
     fun startTracking() {
         Log.d("TrackService", "startTracking - inService")
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5L, 1F, locationListener)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1L, 1F, locationListener)
         } catch (exception: SecurityException) {
             Log.d("TrackLogs", "TrackService - SecurityException $exception")
         }
@@ -90,7 +90,7 @@ class TrackService : Service(), LifecycleObserver {
         run.distance += location.distanceTo(run.latestLocation)
         run.timeElapsed = (System.currentTimeMillis() * 1000000) - run.timeStarted!!
         run.routeLine.add(LatLng(location.latitude, location.longitude)).color(Color.CYAN).width(12F)
-        Log.d("TrackButton", "Service: ${run.runStarted}")
+        Log.d("TrackService", "Run: ${run.distance}m : ${run.timeElapsed/1000000}")
         run.latestLocation = location
         executeCallbacks(run)
     }
@@ -149,6 +149,8 @@ class TrackService : Service(), LifecycleObserver {
 
     interface ITrackCallback {
         fun onLocationUpdate(run: Run)
+
+        fun onRunFinished(run: Run)
     }
 
 }
