@@ -8,8 +8,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.PolylineOptions
 import com.jlbennett.trackmapstat.database.RunContract
 import com.jlbennett.trackmapstat.databinding.FragmentSaveRunBinding
 import com.jlbennett.trackmapstat.database.RunContract.RunEntry
@@ -20,6 +27,8 @@ class SaveRunFragment : Fragment() {
     private lateinit var binding: FragmentSaveRunBinding
     private val args: SaveRunFragmentArgs by navArgs()
     private lateinit var run: Run
+    private lateinit var mapView: MapView
+    private lateinit var googleMap: GoogleMap
 
 
     override fun onCreateView(
@@ -36,15 +45,32 @@ class SaveRunFragment : Fragment() {
         val hours = minutes / 60
         binding.timeText.text = "Time: ${"%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)}"
 
+        mapView = binding.overviewMap
+        mapView.onCreate(savedInstanceState)
+        if (!::googleMap.isInitialized) initMap(run.routeLine)
+        mapView.onResume()
+
         binding.saveButton.setOnClickListener { saveRun() }
-        binding.readButton.setOnClickListener { readFromDB() }
 
         return binding.root
     }
 
+    private fun initMap(line: PolylineOptions) {
+        mapView.getMapAsync { map ->
+            googleMap = map
+            val boundsBuilder = LatLngBounds.Builder()
+            for(point: LatLng in line.points){
+                boundsBuilder.include(point)
+            }
+            val bounds = boundsBuilder.build()
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 64))
+            googleMap.addPolyline(line)
+        }
+    }
+
+
     private fun saveRun() {
         val name: String = binding.nameEntry.text.toString()
-        //TODO validate this name variable
         val distance: Float = run.distance
         val time: Float = run.timeElapsed.toFloat()
 
@@ -53,12 +79,18 @@ class SaveRunFragment : Fragment() {
         runValues.put(RunEntry.COLUMN_DISTANCE, distance)
         runValues.put(RunEntry.COLUMN_TIME, time)
 
-        context!!.contentResolver.insert(RunContract.CONTENT_URI, runValues)
+        if (name.isNotBlank()) {
+            context!!.contentResolver.insert(RunContract.CONTENT_URI, runValues)
+            Toast.makeText(context, "Run: '$name' has been saved", Toast.LENGTH_LONG).show()
+            fragmentManager!!.popBackStack()
+        } else {
+            Toast.makeText(context, "Please Enter a name", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun readFromDB() {
         val cursor = context!!.contentResolver.query(RunContract.CONTENT_URI, null, null, null, null)!!
-        for(i in 0 until cursor.count) {
+        for (i in 0 until cursor.count) {
             cursor.moveToNext()
             val id = cursor.getInt(cursor.getColumnIndex(RunEntry.COLUMN_ID))
             val name = cursor.getString(cursor.getColumnIndex(RunEntry.COLUMN_NAME))

@@ -121,7 +121,6 @@ class TrackFragment : Fragment() {
     }
 
     private fun navigateToSaveFragment(run: Run) {
-        Toast.makeText(context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
         Log.d("TrackService", "navigate with run: ${run.distance}")
         findNavController().navigate(TrackFragmentDirections.actionTrackFragmentToSaveRunFragment(run))
     }

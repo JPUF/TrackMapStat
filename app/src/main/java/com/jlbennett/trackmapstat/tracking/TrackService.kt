@@ -68,11 +68,11 @@ class TrackService : Service(), LifecycleObserver {
     }
 
     fun stopTracking() {
-        Log.d("TrackService", "stopTracking - removing updates")
         locationManager.removeUpdates(locationListener)
-        Log.d("TrackService", "stopTracking - run: ${run.distance}m")
         executeFinishCallback(run)
         stopSelf()
+        //TODO why does the notification still exist after the service should've stopped?
+        Log.d("TrackService", "stopTracking - run: ${run.distance}m")
     }
 
     private fun executeCallbacks(run: Run) {
@@ -92,15 +92,15 @@ class TrackService : Service(), LifecycleObserver {
     }
 
     fun updateRun(location: Location) {
-        if(run.latestLocation == null || run.timeStarted == null) {
+        if (run.latestLocation == null || run.timeStarted == null) {
             run.latestLocation = location
             run.timeStarted = System.currentTimeMillis() * 1000000
             run.runStarted = true
         }
         run.distance += location.distanceTo(run.latestLocation)
         run.timeElapsed = (System.currentTimeMillis() * 1000000) - run.timeStarted!!
-        run.routeLine.add(LatLng(location.latitude, location.longitude)).color(Color.CYAN).width(12F)
-        Log.d("TrackService", "Run: ${run.distance}m : ${run.timeElapsed/1000000}")
+        run.routeLine.add(LatLng(location.latitude, location.longitude)).color(Color.parseColor("#731086")).width(12F)
+        Log.d("TrackService", "Run: ${run.distance}m : ${run.timeElapsed / 1000000}")
         run.latestLocation = location
         executeCallbacks(run)
     }
@@ -108,7 +108,8 @@ class TrackService : Service(), LifecycleObserver {
     private fun showNotification() {
         val channelID = "100"
         val notificationID = 1
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationName = "TrackStatMap Notification Channel"
             val description = "Notification Channel for TrackStatMap app"
@@ -126,7 +127,8 @@ class TrackService : Service(), LifecycleObserver {
 
         val trackIntent = Intent(applicationContext, TrackFragment::class.java)
         trackIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val trackPendingIntent = PendingIntent.getActivity(applicationContext, 1001, trackIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val trackPendingIntent =
+            PendingIntent.getActivity(applicationContext, 1001, trackIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         //TODO notification doesn't return user to Fragment.
         val builder = NotificationCompat.Builder(applicationContext, channelID)
