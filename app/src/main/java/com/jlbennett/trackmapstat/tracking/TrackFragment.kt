@@ -122,7 +122,6 @@ class TrackFragment : Fragment() {
 
     private fun navigateToSaveFragment(run: Run) {
         Toast.makeText(context, "Run stopped - SAVE NOW", Toast.LENGTH_LONG).show()
-        //TODO perhaps this should instead go to a new fragment, which allows user to name the run etc.
         Log.d("TrackService", "navigate with run: ${run.distance}")
         findNavController().navigate(TrackFragmentDirections.actionTrackFragmentToSaveRunFragment(run))
     }

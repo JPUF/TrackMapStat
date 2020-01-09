@@ -27,6 +27,11 @@ class SaveRunFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_save_run, container, false)
         run = args.run
         Log.d("TrackSaveRun", "Run: distance = ${run.distance}")
+        binding.distanceText.text = "Distance: ${"%.2f".format(run.distance)}m"
+        val seconds = (run.timeElapsed / 1000000000)
+        val minutes = seconds / 60
+        val hours = minutes / 60
+        binding.timeText.text = "Time: ${"%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)}"
 
         return binding.root
     }

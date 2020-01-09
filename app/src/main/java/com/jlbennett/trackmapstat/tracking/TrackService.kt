@@ -70,7 +70,7 @@ class TrackService : Service(), LifecycleObserver {
     fun stopTracking() {
         Log.d("TrackService", "stopTracking - removing updates")
         locationManager.removeUpdates(locationListener)
-        //TODO save run to database from here. Consider the new Fragment TODO
+        //TODO save run to database from here.
         Log.d("TrackService", "stopTracking - run: ${run.distance}m")
         executeFinishCallback(run)
         stopSelf()
