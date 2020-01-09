@@ -8,6 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Run(
+    var name: String?,
     var distance: Float,
     var timeElapsed: Long,
     var timeStarted: Long?,

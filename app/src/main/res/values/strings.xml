@@ -6,4 +6,6 @@
     <string name="run_overview">Run Overview</string>
     <string name="time">Time:</string>
     <string name="distance">Distance:</string>
+    <string name="save_run">Save Run</string>
+    <string name="name">Name:</string>
 </resources>
