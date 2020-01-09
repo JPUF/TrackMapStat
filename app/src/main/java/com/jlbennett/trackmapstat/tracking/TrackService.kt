@@ -16,6 +16,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.Navigation.findNavController
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import com.jlbennett.trackmapstat.MainActivity
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.Run
@@ -27,7 +28,7 @@ class TrackService : Service(), LifecycleObserver {
     private lateinit var locationManager: LocationManager
     private lateinit var locationListener: TrackLocationListener
     val remoteCallbackList = RemoteCallbackList<TrackBinder>()
-    private val run = Run()
+    private val run = Run(0F, 0L, 0L, null, PolylineOptions(), false)
 
     override fun onCreate() {
         super.onCreate()
@@ -70,6 +71,8 @@ class TrackService : Service(), LifecycleObserver {
         Log.d("TrackService", "stopTracking - removing updates")
         locationManager.removeUpdates(locationListener)
         //TODO save run to database from here. Consider the new Fragment TODO
+        Log.d("TrackService", "stopTracking - run: ${run.distance}m")
+        executeFinishCallback(run)
         stopSelf()
     }
 
@@ -77,6 +80,14 @@ class TrackService : Service(), LifecycleObserver {
         val callbackCount = remoteCallbackList.beginBroadcast()
         for (i in 0 until callbackCount) {
             remoteCallbackList.getBroadcastItem(i).callback!!.onLocationUpdate(run)
+        }
+        remoteCallbackList.finishBroadcast()
+    }
+
+    private fun executeFinishCallback(run: Run) {
+        val callbackCount = remoteCallbackList.beginBroadcast()
+        for (i in 0 until callbackCount) {
+            remoteCallbackList.getBroadcastItem(i).callback!!.onRunFinished(run)
         }
         remoteCallbackList.finishBroadcast()
     }

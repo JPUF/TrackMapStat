@@ -1,13 +1,17 @@
 package com.jlbennett.trackmapstat
 
 import android.location.Location
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.android.parcel.Parcelize
 
-class Run {
-    var distance: Float = 0F
-    var timeElapsed: Long = 0L
-    var timeStarted: Long? = null
-    var latestLocation: Location? = null
-    val routeLine = PolylineOptions()
-    var runStarted: Boolean = false
-}
+@Parcelize
+data class Run(
+    var distance: Float,
+    var timeElapsed: Long,
+    var timeStarted: Long?,
+    var latestLocation: Location?,
+    var routeLine: PolylineOptions,
+    var runStarted: Boolean
+) : Parcelable
