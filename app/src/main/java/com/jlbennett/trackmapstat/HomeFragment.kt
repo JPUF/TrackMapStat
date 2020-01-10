@@ -20,9 +20,8 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
-        binding.trackCard.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_trackFragment)
-        }
+        binding.trackCard.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_trackFragment) }
+        binding.allRunsCard.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_allRunsFragment) }
 
         return binding.root
     }

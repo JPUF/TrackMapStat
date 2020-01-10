@@ -135,7 +135,7 @@ class TrackService : Service(), LifecycleObserver {
             .setSmallIcon(R.drawable.ic_runner)
             .setSound(null)
             .setContentTitle(resources.getString(R.string.app_name))
-            .setContentText("Return to Map")
+            .setContentText("Your location is being tracked")
             .setContentIntent(trackPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
         notificationManager.notify(notificationID, builder.build())

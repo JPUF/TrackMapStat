@@ -7,6 +7,7 @@
               android:label="HomeFragment">
         <action android:id="@+id/action_homeFragment_to_trackFragment" app:destination="@id/trackFragment"
                 app:popUpTo="@+id/homeFragment"/>
+        <action android:id="@+id/action_homeFragment_to_allRunsFragment" app:destination="@id/allRunsFragment"/>
     </fragment>
     <fragment android:id="@+id/trackFragment" android:name="com.jlbennett.trackmapstat.tracking.TrackFragment"
               android:label="TrackFragment">
@@ -18,4 +19,6 @@
               android:label="SaveRunFragment">
         <argument android:name="run" app:argType="com.jlbennett.trackmapstat.Run"/>
     </fragment>
+    <fragment android:id="@+id/allRunsFragment" android:name="com.jlbennett.trackmapstat.AllRunsFragment"
+              android:label="AllRunsFragment"/>
 </navigation>

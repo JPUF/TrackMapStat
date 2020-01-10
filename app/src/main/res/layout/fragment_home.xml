@@ -14,10 +14,10 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/track_card"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/log_card" app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp">
+                app:layout_constraintBottom_toTopOf="@+id/all_runs_card" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp" android:layout_marginTop="8dp">
             <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:id="@+id/track_layout">
                 <ImageView
@@ -33,26 +33,26 @@
                         android:textSize="28sp"
                         android:text="TRACK A RUN"
                         android:textStyle="bold"
-                        android:shadowColor = "#000"
-                        android:shadowRadius = "8"
+                        android:shadowColor="#000"
+                        android:shadowRadius="8"
                         android:textColor="#FFFFFF"
-                        android:layout_margin="6dp"
-                />
+                        android:id="@+id/track_text" android:layout_marginTop="6dp" android:layout_marginStart="6dp"
+                        android:layout_marginEnd="6dp" android:layout_marginBottom="6dp"/>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/log_card"
+                android:id="@+id/all_runs_card"
                 app:layout_constraintTop_toBottomOf="@+id/track_card"
                 app:layout_constraintBottom_toTopOf="@+id/stat_card" app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginBottom="4dp" android:layout_marginTop="4dp">
 
             <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:id="@+id/log_layout">
+                            android:id="@+id/all_runs_layout">
                 <ImageView
                         android:contentDescription="@string/image_of_exercise"
                         android:layout_width="fill_parent"
@@ -65,12 +65,12 @@
                         android:gravity="center_vertical"
                         android:textSize="28sp"
                         android:text="YOUR RUNS"
-                        android:shadowColor = "#000"
-                        android:shadowRadius = "8"
+                        android:shadowColor="#000"
+                        android:shadowRadius="8"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
-                        android:layout_margin="6dp"
-                />
+                        android:id="@+id/runs_text" android:layout_marginTop="6dp" android:layout_marginStart="6dp"
+                        android:layout_marginEnd="6dp" android:layout_marginBottom="6dp"/>
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
@@ -78,10 +78,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/stat_card"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toBottomOf="@+id/log_card"
-                app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="16dp"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toBottomOf="@+id/all_runs_card"
+                app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="16dp" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="16dp" android:layout_marginRight="16dp">
+                android:layout_marginEnd="16dp" android:layout_marginBottom="8dp">
             <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:id="@+id/stat_layout">
                 <ImageView
@@ -95,12 +95,12 @@
                         android:gravity="center_vertical"
                         android:textSize="28sp"
                         android:text="STATISTICS"
-                        android:shadowColor = "#000"
-                        android:shadowRadius = "8"
+                        android:shadowColor="#000"
+                        android:shadowRadius="8"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
-                        android:layout_margin="6dp"
-                />
+                        android:id="@+id/stats_text" android:layout_marginTop="6dp" android:layout_marginStart="6dp"
+                        android:layout_marginEnd="6dp" android:layout_marginBottom="6dp"/>
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
