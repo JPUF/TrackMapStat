@@ -13,29 +13,33 @@ import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleObserver
-import androidx.navigation.NavDeepLinkBuilder
-import androidx.navigation.Navigation.findNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
-import com.jlbennett.trackmapstat.MainActivity
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.Run
 
-//Service provides data, and is considered part of Model in MVVM
+/*
+    Service provides data, and is considered part of the Model in MVVM
+    It has a separate lifecycle to the View, and continues executing even after the relevant Fragment is inactive.
+ */
 class TrackService : Service(), LifecycleObserver {
 
     private val binder: IBinder = TrackBinder()
     private lateinit var locationManager: LocationManager
     private lateinit var locationListener: TrackLocationListener
+    private var notificationManager: NotificationManager? = null
     val remoteCallbackList = RemoteCallbackList<TrackBinder>()
+
+    //The service has a Run object, which is updated as the user location changes.
     private val run = Run(null, 0F, 0L, 0L, null, PolylineOptions(), false)
 
     override fun onCreate() {
         super.onCreate()
         Log.d("TrackService", "Service onCreate()")
+
+        //The user's current location is obtained using the LOCATION_SERVICE system service.
         locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationListener = TrackLocationListener(this)
-        showNotification()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -61,21 +65,27 @@ class TrackService : Service(), LifecycleObserver {
     fun startTracking() {
         Log.d("TrackService", "startTracking - inService")
         try {
+            //Begin tracking location updates from the LocationListener
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1L, 1F, locationListener)
         } catch (exception: SecurityException) {
             Log.d("TrackLogs", "TrackService - SecurityException $exception")
         }
+        showNotification()
     }
 
     fun stopTracking() {
-        locationManager.removeUpdates(locationListener)
+        locationManager.removeUpdates(locationListener)//Stop receiving updates from LocationListener
+        notificationManager!!.cancelAll()
         executeFinishCallback(run)
         stopSelf()
-        //TODO why does the notification still exist after the service should've stopped?
         Log.d("TrackService", "stopTracking - run: ${run.distance}m")
     }
 
-    private fun executeCallbacks(run: Run) {
+    /*
+        Executes the implemented interface location callback method. This is how data is passed from the Service.
+     */
+    //TODO is this BroadcastReceiver stuff? Comments to describe how this works.
+    private fun executeLocationCallback(run: Run) {
         val callbackCount = remoteCallbackList.beginBroadcast()
         for (i in 0 until callbackCount) {
             remoteCallbackList.getBroadcastItem(i).callback!!.onLocationUpdate(run)
@@ -91,6 +101,9 @@ class TrackService : Service(), LifecycleObserver {
         remoteCallbackList.finishBroadcast()
     }
 
+    /*
+        The function that is called by the LocationListener. This then updates the Service's local Run object.
+     */
     fun updateRun(location: Location) {
         if (run.latestLocation == null || run.timeStarted == null) {
             run.latestLocation = location
@@ -102,29 +115,28 @@ class TrackService : Service(), LifecycleObserver {
         run.routeLine.add(LatLng(location.latitude, location.longitude)).color(Color.parseColor("#731086")).width(12F)
         Log.d("TrackService", "Run: ${run.distance}m : ${run.timeElapsed / 1000000}")
         run.latestLocation = location
-        executeCallbacks(run)
+        executeLocationCallback(run)
     }
 
+    /*
+        Displays a nice little notification for the user.
+     */
     private fun showNotification() {
         val channelID = "100"
         val notificationID = 1
-        val notificationManager =
-            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        //The appropriate System Service is acquired.
+        notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        //Additional data fields are included to support later SDK versions.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationName = "TrackStatMap Notification Channel"
             val description = "Notification Channel for TrackStatMap app"
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(channelID, notificationName, importance)
             channel.description = description
-            notificationManager.createNotificationChannel(channel)
+            notificationManager!!.createNotificationChannel(channel)
         }
-        /*
-        val trackPendingIntent: PendingIntent = findNavController(R.id.navHostFragment)
-            .setGraph(R.navigation.navigation)
-            .setDestination(R.id.trackDestination)
-            .createPendingIntent()
-        */
 
+        //An intent is included that is supposed to return the user back to the TrackFragment
         val trackIntent = Intent(applicationContext, TrackFragment::class.java)
         trackIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val trackPendingIntent =
@@ -138,7 +150,7 @@ class TrackService : Service(), LifecycleObserver {
             .setContentText("Your location is being tracked")
             .setContentIntent(trackPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-        notificationManager.notify(notificationID, builder.build())
+        notificationManager!!.notify(notificationID, builder.build())
     }
 
     inner class TrackBinder : Binder(), IInterface {

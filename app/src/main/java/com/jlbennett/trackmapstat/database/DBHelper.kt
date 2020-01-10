@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.jlbennett.trackmapstat.database.RunContract.RunEntry
 
+/*
+    The underlying SQLiteOpenHelper class that is responsible for managing the existence of the DB itself.
+ */
 class DBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -14,6 +17,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
+        //Creates table if it doesn't already exist.
         val sqlCreate = "CREATE TABLE ${RunEntry.TABLE_NAME}(" +
                 "${RunEntry.COLUMN_ID} INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "${RunEntry.COLUMN_NAME} VARCHAR(128), " +

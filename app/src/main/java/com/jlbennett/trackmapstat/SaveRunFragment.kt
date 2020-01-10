@@ -21,10 +21,16 @@ import com.jlbennett.trackmapstat.database.RunContract
 import com.jlbennett.trackmapstat.databinding.FragmentSaveRunBinding
 import com.jlbennett.trackmapstat.database.RunContract.RunEntry
 
-
+/*
+    A fragment that the user is directed to once they've finished a run.
+    It is responsible for displaying an overview of their recent run
+    and allowing the user to name and save it to the DB.
+ */
 class SaveRunFragment : Fragment() {
 
     private lateinit var binding: FragmentSaveRunBinding
+
+    //This Fragment can only be navigated to if a Run object is passed as a 'SafeArg', as defined in navigation.xml
     private val args: SaveRunFragmentArgs by navArgs()
     private lateinit var run: Run
     private lateinit var mapView: MapView
@@ -37,8 +43,10 @@ class SaveRunFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_save_run, container, false)
-        run = args.run
+        run = args.run//The Run object is obtained from the SafeArgs
         Log.d("TrackSaveRun", "Run: distance = ${run.distance}")
+
+        //The UI fields are updated to display an overview of the run.
         binding.distanceText.text = "Distance: ${"%.2f".format(run.distance)}m"
         val seconds = (run.timeElapsed / 1000000000)
         val minutes = seconds / 60
@@ -55,6 +63,9 @@ class SaveRunFragment : Fragment() {
         return binding.root
     }
 
+    /*
+        Display a GoogleMap in a MapView, to show the user's recent run.
+     */
     private fun initMap(line: PolylineOptions) {
         mapView.getMapAsync { map ->
             googleMap = map
@@ -62,13 +73,16 @@ class SaveRunFragment : Fragment() {
             for(point: LatLng in line.points){
                 boundsBuilder.include(point)
             }
-            val bounds = boundsBuilder.build()
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 64))
+            val bounds = boundsBuilder.build()//This are the limiting bounds of the line.
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 64))//This displays only the run area.
             googleMap.addPolyline(line)
         }
     }
 
 
+    /*
+        Save the run information to the DB, via the ContentProvider.
+     */
     private fun saveRun() {
         val name: String = binding.nameEntry.text.toString()
         val distance: Float = run.distance
@@ -79,28 +93,18 @@ class SaveRunFragment : Fragment() {
         runValues.put(RunEntry.COLUMN_DISTANCE, distance)
         runValues.put(RunEntry.COLUMN_TIME, time)
 
+        //The run must be named by the user in order to be saved.
         if (name.isNotBlank()) {
+            //The ContentProvider's insert is called, with the Run's values.
             context!!.contentResolver.insert(RunContract.CONTENT_URI, runValues)
+
+            //Confirmation is given to the user by displaying a Toast.
             Toast.makeText(context, "Run: '$name' has been saved", Toast.LENGTH_LONG).show()
+            //This navigates the user back to the home page (as defined in navigation.xml)
             fragmentManager!!.popBackStack()
         } else {
+            //If they failed to name the run, they are made aware of this.
             Toast.makeText(context, "Please Enter a name", Toast.LENGTH_SHORT).show()
         }
     }
-
-    private fun readFromDB() {
-        val cursor = context!!.contentResolver.query(RunContract.CONTENT_URI, null, null, null, null)!!
-        for (i in 0 until cursor.count) {
-            cursor.moveToNext()
-            val id = cursor.getInt(cursor.getColumnIndex(RunEntry.COLUMN_ID))
-            val name = cursor.getString(cursor.getColumnIndex(RunEntry.COLUMN_NAME))
-            val distance = cursor.getFloat(cursor.getColumnIndex(RunEntry.COLUMN_DISTANCE))
-            val time = cursor.getFloat(cursor.getColumnIndex(RunEntry.COLUMN_TIME))
-
-            Log.d("TrackDB", "Reading: id=$id, name=$name, distance=$distance, time=$time")
-        }
-        cursor.close()
-    }
-
-
 }

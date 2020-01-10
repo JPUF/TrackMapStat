@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jlbennett.trackmapstat.database.RunContract
 import com.jlbennett.trackmapstat.databinding.FragmentAllRunsBinding
 
-
+/*
+    A UI Fragment to allow users to see and select all of their saved runs.
+ */
 class AllRunsFragment : Fragment() {
 
     private lateinit var binding: FragmentAllRunsBinding
@@ -25,7 +27,7 @@ class AllRunsFragment : Fragment() {
 
         runRecycler = binding.runRecycler
         runRecycler.layoutManager = LinearLayoutManager(activity)
-        runAdapter = RunAdapter(getAllRuns()!!)
+        runAdapter = RunAdapter(getAllRuns()!!)//The run adapter is initialised with a Cursor pointing to all Runs.
         runAdapter.notifyDataSetChanged()
         runRecycler.adapter = runAdapter
 
@@ -33,6 +35,9 @@ class AllRunsFragment : Fragment() {
         return binding.root
     }
 
+    /*
+        Queries the ContentProvider to return a Cursor containing references to all of the Runs stored in the DB.
+     */
     private fun getAllRuns(): Cursor? {
         return context!!.contentResolver.query(
             RunContract.CONTENT_URI,

@@ -14,7 +14,11 @@ import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.jlbennett.trackmapstat.database.RunContract.RunEntry
 
+/*
+    A Class to Adapter the database items to be displayed in a RecyclerView.
+ */
 class RunAdapter(cursor: Cursor) : RecyclerView.Adapter<RunViewHolder>() {
+    //This class has a reference to a database Cursor object, which contains references to the desired items.
     private var runCursor: Cursor = cursor
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
@@ -27,6 +31,9 @@ class RunAdapter(cursor: Cursor) : RecyclerView.Adapter<RunViewHolder>() {
         return runCursor.count
     }
 
+    /*
+        Retrieves each individual field, and updates the respective View within the ViewHolder.
+     */
     override fun onBindViewHolder(holder: RunViewHolder, position: Int) {
         if (!runCursor.moveToPosition(position)) return
 
@@ -51,7 +58,9 @@ class RunAdapter(cursor: Cursor) : RecyclerView.Adapter<RunViewHolder>() {
         holder.distanceTimeText.setText(span, TextView.BufferType.SPANNABLE)
     }
 }
-
+/*
+    A class that acts as a wrapper around each list item.
+ */
 class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     var idText: TextView = itemView.findViewById(R.id.id_text)
     var nameText: TextView = itemView.findViewById(R.id.name_text)
@@ -61,11 +70,15 @@ class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.On
         itemView.setOnClickListener(this)
     }
 
+    /*
+        Handles when a user selects a particular run from the RecyclerView.
+     */
     override fun onClick(view: View?) {
         val cardView: CardView = view as CardView
         val cardLayout = cardView[0] as LinearLayout
         val idText = cardLayout[0] as TextView
-        Log.d("Track", "RunAdapter: onClick: id = ${idText.text}")
+        val id = Integer.parseInt(idText.text.toString())//The ID is parsed from the View.
+        Log.d("Track", "RunAdapter: onClick: id = $id")
         //TODO could send info to a RunFragment class by displaying an ID in Recycler.
         //Read that ID here. Send that to the fragment. Read the appropriate Run from DB in that fragment.
 

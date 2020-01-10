@@ -6,6 +6,10 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.android.parcel.Parcelize
 
+/*
+    The 'Model' data class to represent a user's run.
+    It is Parcelable so that instances can be passed as a 'SafeArg' when navigating between Fragments.
+ */
 @Parcelize
 data class Run(
     var name: String?,
