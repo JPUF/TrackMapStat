@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".StatsFragment"
+            android:id="@+id/constraintLayout">
+        <TextView
+                android:text="@string/statistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/header_text"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp" android:layout_marginStart="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/total_distance_text"
+                app:layout_constraintTop_toBottomOf="@+id/header_text" android:layout_marginTop="32dp"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
+                tools:text="Total Distance Run:" android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/total_time_text"
+                app:layout_constraintTop_toBottomOf="@+id/total_distance_text" android:layout_marginTop="16dp"
+                tools:text="Total Time Running:" android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/overall_pace_text" android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/total_time_text" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="32dp" tools:text="Overall Pace:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

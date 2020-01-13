@@ -30,6 +30,8 @@ class HomeFragment : Fragment() {
         // This allows for paths to be defined in a clear manner, in res/navigation/navigation.xml
         binding.trackCard.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_trackFragment) }
         binding.allRunsCard.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_allRunsFragment) }
+        binding.statCard.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_statsFragment) }
+
 
         return binding.root
     }

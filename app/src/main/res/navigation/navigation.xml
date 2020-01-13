@@ -8,6 +8,7 @@
         <action android:id="@+id/action_homeFragment_to_trackFragment" app:destination="@id/trackFragment"
                 app:popUpTo="@+id/homeFragment"/>
         <action android:id="@+id/action_homeFragment_to_allRunsFragment" app:destination="@id/allRunsFragment"/>
+        <action android:id="@+id/action_homeFragment_to_statsFragment" app:destination="@id/statsFragment"/>
     </fragment>
     <fragment android:id="@+id/trackFragment" android:name="com.jlbennett.trackmapstat.tracking.TrackFragment"
               android:label="TrackFragment">
@@ -29,4 +30,6 @@
               android:label="fragment_view_simple_run" tools:layout="@layout/fragment_view_simple_run">
         <argument android:name="run_id" app:argType="integer"/>
     </fragment>
+    <fragment android:id="@+id/statsFragment" android:name="com.jlbennett.trackmapstat.StatsFragment"
+              android:label="StatsFragment"/>
 </navigation>
