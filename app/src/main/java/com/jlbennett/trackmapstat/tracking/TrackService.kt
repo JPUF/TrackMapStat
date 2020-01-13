@@ -140,8 +140,7 @@ class TrackService : Service(), LifecycleObserver {
         trackIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val trackPendingIntent =
             PendingIntent.getActivity(applicationContext, 1001, trackIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        //TODO notification doesn't return user to Fragment.
+        
         val builder = NotificationCompat.Builder(applicationContext, channelID)
             .setSmallIcon(R.drawable.ic_runner)
             .setSound(null)
