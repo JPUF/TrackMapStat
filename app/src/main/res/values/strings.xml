@@ -11,8 +11,6 @@
     <string name="go_for_a_run">Go for a run!</string>
     <string name="all_your_runs">All Your Runs</string>
     <string name="no_recorded_runs">No recorded runs</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="view_run">View Run</string>
+    <string name="pace">Pace:</string>
 </resources>

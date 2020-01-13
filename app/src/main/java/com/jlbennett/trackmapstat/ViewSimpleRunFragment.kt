@@ -45,6 +45,9 @@ class ViewSimpleRunFragment : Fragment() {
                 val minutes = seconds / 60
                 val hours = minutes / 60
                 binding.timeText.text = "Time: ${"%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)}"
+                val metersPerSecond = distance / seconds
+                val kPerHour = metersPerSecond * 3.6
+                binding.paceText.text = "Pace: ${"%.2f".format(kPerHour)}km/h"
                 cursor.close()
             }
         }
