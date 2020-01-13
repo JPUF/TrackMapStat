@@ -182,7 +182,7 @@ class TrackFragment : Fragment() {
             try {
                 googleMap.isMyLocationEnabled = true//Allow user to view their current location, before tracking begins.
             } catch (exception: SecurityException) {
-                //TODO handle permission granting
+                binding.permissionText.visibility = View.VISIBLE
             }
             if (line != null) {//True when the map is reinitialised after tracking has already begun
                 updateLine(line)
