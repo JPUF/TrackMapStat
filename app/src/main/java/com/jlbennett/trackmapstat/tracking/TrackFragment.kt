@@ -141,6 +141,7 @@ class TrackFragment : Fragment() {
         Log.d("TrackService", "navigate with run: ${run.distance}")
         //Navigation Component used again. This time with an argument. Instead of sending data in a bundle.
         //The run info is sent using 'SafeArgs', which ensures type safety on receipt.
+        //The SafeArgs plug-in generates this new class.
         findNavController().navigate(TrackFragmentDirections.actionTrackFragmentToSaveRunFragment(run))
     }
 

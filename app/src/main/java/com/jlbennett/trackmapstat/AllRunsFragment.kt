@@ -31,6 +31,12 @@ class AllRunsFragment : Fragment() {
         runAdapter.notifyDataSetChanged()
         runRecycler.adapter = runAdapter
 
+        if (runAdapter.itemCount == 0) {
+            binding.noRunsText.visibility = View.VISIBLE
+        } else {
+            binding.noRunsText.visibility = View.GONE
+        }
+
 
         return binding.root
     }
@@ -47,6 +53,4 @@ class AllRunsFragment : Fragment() {
             RunContract.RunEntry.COLUMN_ID
         )
     }
-
-
 }

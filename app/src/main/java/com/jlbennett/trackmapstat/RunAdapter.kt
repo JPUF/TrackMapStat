@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.text.bold
 import androidx.core.view.get
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.jlbennett.trackmapstat.database.RunContract.RunEntry
 
@@ -56,38 +57,32 @@ class RunAdapter(cursor: Cursor) : RecyclerView.Adapter<RunViewHolder>() {
         holder.idText.text = id.toString()
         holder.nameText.text = name
         holder.distanceTimeText.setText(span, TextView.BufferType.SPANNABLE)
+        holder.card.setOnClickListener { onItemClick(it as CardView) }
+    }
+
+    private fun onItemClick(card: CardView) {
+        val cardLayout = card[0] as LinearLayout
+        val idText = cardLayout[0] as TextView
+        val id = Integer.parseInt(idText.text.toString())//The ID is parsed from the View.
+        Log.d("Track", "RunAdapter: onClick: id = $id")
+        val action = AllRunsFragmentDirections.actionAllRunsFragmentToViewSimpleRunFragment(id)
+        card.findNavController().navigate(action)
+        //Navigation.createNavigateOnClickListener(action.actionId)
     }
 }
+
 /*
     A class that acts as a wrapper around each list item.
  */
 class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    override fun onClick(p0: View?) {/*Implemented in AdapterClass*/}
+
+    var card: CardView = itemView.findViewById(R.id.item_card)
     var idText: TextView = itemView.findViewById(R.id.id_text)
     var nameText: TextView = itemView.findViewById(R.id.name_text)
     var distanceTimeText: TextView = itemView.findViewById(R.id.distance_time_text)
 
     init {
         itemView.setOnClickListener(this)
-    }
-
-    /*
-        Handles when a user selects a particular run from the RecyclerView.
-     */
-    override fun onClick(view: View?) {
-        val cardView: CardView = view as CardView
-        val cardLayout = cardView[0] as LinearLayout
-        val idText = cardLayout[0] as TextView
-        val id = Integer.parseInt(idText.text.toString())//The ID is parsed from the View.
-        Log.d("Track", "RunAdapter: onClick: id = $id")
-        //TODO could send info to a RunFragment class by displaying an ID in Recycler.
-        //Read that ID here. Send that to the fragment. Read the appropriate Run from DB in that fragment.
-
-        /*
-        val intent = Intent(view.context, RunFragment::class.java)
-        intent.putExtra("MODE", RunFragment.VIEW)
-        intent.putExtra("RECIPE_ID", recipeID)
-
-        view.context.startActivity(intent)
-        */
     }
 }

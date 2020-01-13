@@ -84,7 +84,6 @@ class TrackService : Service(), LifecycleObserver {
     /*
         Executes the implemented interface location callback method. This is how data is passed from the Service.
      */
-    //TODO is this BroadcastReceiver stuff? Comments to describe how this works.
     private fun executeLocationCallback(run: Run) {
         val callbackCount = remoteCallbackList.beginBroadcast()
         for (i in 0 until callbackCount) {

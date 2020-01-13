@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/navigation" app:startDestination="@id/homeFragment">
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/navigation" app:startDestination="@id/homeFragment">
 
     <fragment android:id="@+id/homeFragment" android:name="com.jlbennett.trackmapstat.HomeFragment"
               android:label="HomeFragment">
@@ -17,8 +17,16 @@
     <action android:id="@+id/trackDestination" app:destination="@id/trackFragment" app:launchSingleTop="true"/>
     <fragment android:id="@+id/saveRunFragment" android:name="com.jlbennett.trackmapstat.SaveRunFragment"
               android:label="SaveRunFragment">
-        <argument android:name="run" app:argType="com.jlbennett.trackmapstat.Run"/>
+        <argument android:name="run" app:argType="com.jlbennett.trackmapstat.Run"
+        />
     </fragment>
     <fragment android:id="@+id/allRunsFragment" android:name="com.jlbennett.trackmapstat.AllRunsFragment"
-              android:label="AllRunsFragment"/>
+              android:label="AllRunsFragment">
+        <action android:id="@+id/action_allRunsFragment_to_viewSimpleRunFragment"
+                app:destination="@id/viewSimpleRunFragment"/>
+    </fragment>
+    <fragment android:id="@+id/viewSimpleRunFragment" android:name="com.jlbennett.trackmapstat.ViewSimpleRunFragment"
+              android:label="fragment_view_simple_run" tools:layout="@layout/fragment_view_simple_run">
+        <argument android:name="run_id" app:argType="integer"/>
+    </fragment>
 </navigation>
