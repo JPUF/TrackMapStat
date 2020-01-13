@@ -47,7 +47,10 @@ class StatsFragment : Fragment() {
         val hours = minutes / 60
         binding.totalTimeText.text = "Total Time Running: ${"%d:%02d:%02d".format(hours, minutes % 60, seconds % 60)}"
         val metersPerSecond = distance / seconds
-        val kPerHour = metersPerSecond * 3.6
+        var kPerHour = metersPerSecond * 3.6F
+        if (kPerHour.isNaN()) {
+            kPerHour = 0F
+        }
         binding.overallPaceText.text = "Overall Pace: ${"%.2f".format(kPerHour)}km/h"
     }
 }

@@ -14,15 +14,23 @@ import com.jlbennett.trackmapstat.databinding.ActivityMainBinding
     To display UI elements, each Fragment is inflated on top of this Activity.
  */
 class MainActivity : AppCompatActivity() {
+    private val receiver: BroadcastReceiver = LocationStateReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
 
-
+    override fun onResume() {
+        super.onResume()
         //Runtime registering of the Broadcast Receiver
-        val receiver: BroadcastReceiver = LocationStateReceiver()
         val filter = IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION)
         registerReceiver(receiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //Unregister broadcast receiver, to avoid leaks.
+        unregisterReceiver(receiver)
     }
 }
