@@ -20,10 +20,10 @@
         <argument android:name="run" app:argType="com.jlbennett.trackmapstat.Run"
         />
     </fragment>
-    <fragment android:id="@+id/allRunsFragment" android:name="com.jlbennett.trackmapstat.AllRunsFragment"
+    <fragment android:id="@+id/allRunsFragment" android:name="com.jlbennett.trackmapstat.allRuns.AllRunsFragment"
               android:label="AllRunsFragment">
         <action android:id="@+id/action_allRunsFragment_to_viewSimpleRunFragment"
-                app:destination="@id/viewSimpleRunFragment"/>
+                app:destination="@id/viewSimpleRunFragment" app:popUpTo="@+id/homeFragment"/>
     </fragment>
     <fragment android:id="@+id/viewSimpleRunFragment" android:name="com.jlbennett.trackmapstat.ViewSimpleRunFragment"
               android:label="fragment_view_simple_run" tools:layout="@layout/fragment_view_simple_run">

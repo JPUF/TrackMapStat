@@ -145,8 +145,6 @@ class TrackFragment : Fragment() {
         findNavController().navigate(TrackFragmentDirections.actionTrackFragmentToSaveRunFragment(run))
     }
 
-
-    //TODO could this be in the ViewModel?
     /*
         Implements the Service's callback interface. Acts as mid-ground between the Service and ViewModel.
      */

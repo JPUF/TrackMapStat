@@ -1,4 +1,4 @@
-package com.jlbennett.trackmapstat
+package com.jlbennett.trackmapstat.allRuns
 
 
 import android.database.Cursor
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.database.RunContract
 import com.jlbennett.trackmapstat.databinding.FragmentAllRunsBinding
 
@@ -23,11 +24,13 @@ class AllRunsFragment : Fragment() {
     private lateinit var runRecycler: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_all_runs, container, false)
+        binding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_all_runs, container, false)
 
         runRecycler = binding.runRecycler
         runRecycler.layoutManager = LinearLayoutManager(activity)
-        runAdapter = RunAdapter(getAllRuns()!!)//The run adapter is initialised with a Cursor pointing to all Runs.
+        runAdapter =
+            RunAdapter(getAllRuns()!!)//The run adapter is initialised with a Cursor pointing to all Runs.
         runAdapter.notifyDataSetChanged()
         runRecycler.adapter = runAdapter
 

@@ -1,4 +1,4 @@
-package com.jlbennett.trackmapstat
+package com.jlbennett.trackmapstat.allRuns
 
 import android.database.Cursor
 import android.text.SpannableStringBuilder
@@ -13,6 +13,8 @@ import androidx.core.text.bold
 import androidx.core.view.get
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.jlbennett.trackmapstat.allRuns.AllRunsFragmentDirections
+import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.database.RunContract.RunEntry
 
 /*
@@ -75,7 +77,8 @@ class RunAdapter(cursor: Cursor) : RecyclerView.Adapter<RunViewHolder>() {
     A class that acts as a wrapper around each list item.
  */
 class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-    override fun onClick(p0: View?) {/*Implemented in AdapterClass*/}
+    override fun onClick(p0: View?) {/*Implemented in AdapterClass*/
+    }
 
     var card: CardView = itemView.findViewById(R.id.item_card)
     var idText: TextView = itemView.findViewById(R.id.id_text)
