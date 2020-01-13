@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleObserver
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
+import com.jlbennett.trackmapstat.MainActivity
 import com.jlbennett.trackmapstat.R
 import com.jlbennett.trackmapstat.Run
 
@@ -136,11 +137,11 @@ class TrackService : Service(), LifecycleObserver {
         }
 
         //An intent is included that is supposed to return the user back to the TrackFragment
-        val trackIntent = Intent(applicationContext, TrackFragment::class.java)
+        val trackIntent = Intent(applicationContext, MainActivity::class.java)
         trackIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val trackPendingIntent =
             PendingIntent.getActivity(applicationContext, 1001, trackIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        
+
         val builder = NotificationCompat.Builder(applicationContext, channelID)
             .setSmallIcon(R.drawable.ic_runner)
             .setSound(null)
