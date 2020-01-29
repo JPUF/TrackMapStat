@@ -30,6 +30,7 @@ class TrackService : Service(), LifecycleObserver {
     private lateinit var locationListener: TrackLocationListener
     private var notificationManager: NotificationManager? = null
     val remoteCallbackList = RemoteCallbackList<TrackBinder>()
+    private lateinit var wakeLock: PowerManager.WakeLock
 
     //The service has a Run object, which is updated as the user location changes.
     private val run = Run(null, 0F, 0L, 0L, null, PolylineOptions(), false)
@@ -41,6 +42,8 @@ class TrackService : Service(), LifecycleObserver {
         //The user's current location is obtained using the LOCATION_SERVICE system service.
         locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationListener = TrackLocationListener(this)
+        wakeLock = (application.getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TrackMapStat::TrackWakelock")
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -64,6 +67,8 @@ class TrackService : Service(), LifecycleObserver {
     }
 
     fun startTracking() {
+        wakeLock.acquire(5*60*60*1000L)//5 Hour timeout.
+        Log.d("TrackService", "acquired wake lock ----------------------------------------------")
         Log.d("TrackService", "startTracking - inService")
         try {
             //Begin tracking location updates from the LocationListener
@@ -75,6 +80,8 @@ class TrackService : Service(), LifecycleObserver {
     }
 
     fun stopTracking() {
+        wakeLock.release()
+        Log.d("TrackService", "released wake lock ----------------------------------------------")
         locationManager.removeUpdates(locationListener)//Stop receiving updates from LocationListener
         notificationManager!!.cancelAll()
         executeFinishCallback(run)
